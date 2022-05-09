@@ -1,5 +1,6 @@
 const formTweet = document.getElementById("form-tweet");
 const tweetList = document.getElementById("tweet-list");
+const modalTweet = document.getElementById("modalTweet");
 const keyList = "tweetList";
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -7,6 +8,16 @@ document.addEventListener("DOMContentLoaded", function() {
     formTweet.addEventListener("submit", submitTweet);
 
     paintTweets();
+
+    let modals = document.getElementsByClassName("modal");
+
+    for(var i = 0; i < modals.length; i++) {
+        modals[i].addEventListener("click", function(e) {
+            if(e.target === this){
+                this.classList.remove("show");
+            }
+        });
+    }
 });
 
 function submitTweet(e) {
@@ -36,12 +47,19 @@ function paintTweets() {
         html += 
             `<div class="card" id="${list[i].id}">
                 <div class="card-img">
-                    <img src="https:\\picsum.photos/600" alt="">
+                    <img src="https:\\picsum.photos/600" alt="" class="img-fluid">
                 </div>
                 <div class="card-text">
                     ${list[i].text}
                 </div>
-                <button class="close" onclick="deleteTweet(${list[i].id})">X</button>
+                <div class="options">
+                    <button class="btn-option" onclick="editTweet(${list[i].id})">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn-option" onclick="deleteTweet(${list[i].id})">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>`;
     }
 
@@ -73,4 +91,8 @@ function deleteTweet(id) {
     setTimeout(() => {
         tweet.remove();
     }, 300);
+}
+
+function editTweet(id) {
+    modalTweet.classList.add("show");
 }
