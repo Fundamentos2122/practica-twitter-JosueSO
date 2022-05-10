@@ -5,7 +5,7 @@ const keyList = "tweetList";
 
 document.addEventListener("DOMContentLoaded", function() {
     //Agregar evento al formulario
-    formTweet.addEventListener("submit", submitTweet);
+    // formTweet.addEventListener("submit", submitTweet);
 
     paintTweets();
 
@@ -67,14 +67,24 @@ function paintTweets() {
 }
 
 function getTweets() {
-    let list = JSON.parse(localStorage.getItem(keyList));
+    let xhttp = new XMLHttpRequest();
 
-    if (list === null) {
-        return [];
-    }
-    else {
-        return list;
-    }
+    xhttp.open("GET", "../controllers/tweetsController.php", true);
+
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                console.log(this.responseText);
+            }
+            else {
+                console.log("Error");
+            }
+        }
+    };
+
+    xhttp.send();
+
+    return [];
 }
 
 function deleteTweet(id) {

@@ -12,9 +12,9 @@
         <?php include("layouts/header.php"); ?>
         <div class="container">
             <div>
-                <form action="#" id="form-tweet" class="flow">
-                    <label for="tweet">Tweet:</label>
-                    <textarea name="tweet"></textarea>
+                <form action="../controllers/tweetsController.php" method="POST" id="form-tweet" class="flow">
+                    <label for="text">Tweet:</label>
+                    <textarea name="text"></textarea>
                     <input type="submit" value="Agregar">
                 </form>
             </div>
