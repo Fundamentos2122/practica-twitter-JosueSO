@@ -13,25 +13,56 @@ catch(PDOException $e) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    try {
-        $query = $connection->prepare('SELECT * FROM tweets');
-        $query->execute();
+    if (array_key_exists("id", $_GET)) {
+        //Obtener un solo registro
+        try {
+            $id = $_GET["id"];
 
-        $tweets = array();
-
-        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $tweet = new Tweet($row['id'], $row['text'], $row['timestamp'], $row['active']);
-
-            $tweets[] = $tweet;
+            $query = $connection->prepare('SELECT * FROM tweets WHERE id = :id');
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+            $query->execute();
+    
+            $tweet;
+    
+            while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $tweet = new Tweet($row['id'], $row['text'], $row['timestamp'], $row['active']);
+            }
+    
+            echo json_encode($tweet->getArray());
         }
-
-        var_dump($tweets);
+        catch(PDOException $e) {
+            echo $e;
+        }
     }
-    catch(PDOException $e) {
-        echo $e;
+    else {
+        //Obtener TODOS los registros
+        try {
+            $query = $connection->prepare('SELECT * FROM tweets');
+            $query->execute();
+    
+            $tweets = array();
+    
+            while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $tweet = new Tweet($row['id'], $row['text'], $row['timestamp'], $row['active']);
+    
+                $tweets[] = $tweet->getArray();
+            }
+    
+            echo json_encode($tweets);
+        }
+        catch(PDOException $e) {
+            echo $e;
+        }
     }
 }
 else if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    var_dump($_POST);
+    
+    $data = file_get_contents("php://input");
+    var_dump($data);
+
+    exit();
+
     $text = $_POST["text"];
     $timestamp = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
 

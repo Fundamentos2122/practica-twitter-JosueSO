@@ -44,6 +44,17 @@ class Tweet {
     public function setActive($active) {
         $this->_active= $active;
     }
+
+    public function getArray() {
+        $array = array();
+
+        $array["id"] = $this->getId();
+        $array["text"] = $this->getText();
+        $array["timestamp"] = $this->getTimestamp();
+        $array["active"] = $this->getActive();
+
+        return $array;
+    }
 }
 
 ?>

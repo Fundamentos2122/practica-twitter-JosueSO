@@ -10,7 +10,7 @@
                 </form>
             </div>
             <div class="modal-footer text-end">
-                <button class="btn">Guardar</button>
+                <button class="btn" id="btnSaveEdit">Guardar</button>
             </div>
         </div>
     </div>

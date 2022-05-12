@@ -1,13 +1,15 @@
 const formTweet = document.getElementById("form-tweet");
 const tweetList = document.getElementById("tweet-list");
 const modalTweet = document.getElementById("modalTweet");
+const textAreaEdit = document.getElementById("form-edit-text");
+const btnSaveEdit = document.getElementById("btnSaveEdit");
 const keyList = "tweetList";
 
 document.addEventListener("DOMContentLoaded", function() {
     //Agregar evento al formulario
     // formTweet.addEventListener("submit", submitTweet);
 
-    paintTweets();
+    getTweets();
 
     let modals = document.getElementsByClassName("modal");
 
@@ -18,6 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    // btnSaveEdit.addEventListener("click", saveEdit);
 });
 
 function submitTweet(e) {
@@ -38,9 +42,7 @@ function submitTweet(e) {
     paintTweets();
 }
 
-function paintTweets() {
-    let list = getTweets();
-
+function paintTweets(list) {
     let html = '';
 
     for(var i = 0; i < list.length; i++) {
@@ -74,7 +76,9 @@ function getTweets() {
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4) {
             if (this.status === 200) {
-                console.log(this.responseText);
+                let list = JSON.parse(this.responseText);
+
+                paintTweets(list);
             }
             else {
                 console.log("Error");
@@ -104,5 +108,51 @@ function deleteTweet(id) {
 }
 
 function editTweet(id) {
-    modalTweet.classList.add("show");
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.open("GET", "../controllers/tweetsController.php?id=" + id, true);
+
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                let tweet = JSON.parse(this.responseText);
+
+                textAreaEdit.value = tweet.text;
+
+                btnSaveEdit.setAttribute("onclick", "saveEdit(" + tweet.id + ")");
+                modalTweet.classList.add("show");
+            }
+            else {
+                console.log("Error");
+            }
+        }
+    };
+
+    xhttp.send();
+}
+
+function saveEdit(id) {
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", "../controllers/tweetsController.php", true);
+
+    xhttp.setRequestHeader("Content-type", "application/json");
+
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                console.log(this.responseText);
+            }
+            else {
+                console.log("Error");
+            }
+        }
+    };
+
+    let data = {
+        id: id,
+        text: textAreaEdit.value
+    };
+
+    xhttp.send(JSON.stringify(data));
 }
