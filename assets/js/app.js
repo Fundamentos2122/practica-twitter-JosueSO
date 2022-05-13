@@ -1,6 +1,7 @@
 const formTweet = document.getElementById("form-tweet");
 const tweetList = document.getElementById("tweet-list");
 const modalTweet = document.getElementById("modalTweet");
+const idEdit = document.getElementById("form-edit-id");
 const textAreaEdit = document.getElementById("form-edit-text");
 const btnSaveEdit = document.getElementById("btnSaveEdit");
 const keyList = "tweetList";
@@ -117,6 +118,7 @@ function editTweet(id) {
             if (this.status === 200) {
                 let tweet = JSON.parse(this.responseText);
 
+                idEdit.value = tweet.id;
                 textAreaEdit.value = tweet.text;
 
                 btnSaveEdit.setAttribute("onclick", "saveEdit(" + tweet.id + ")");
@@ -141,7 +143,10 @@ function saveEdit(id) {
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4) {
             if (this.status === 200) {
-                console.log(this.responseText);
+                if (this.responseText === "Registro guardado") {
+                    getTweets();
+                    modalTweet.classList.remove("show");
+                }
             }
             else {
                 console.log("Error");
@@ -150,6 +155,7 @@ function saveEdit(id) {
     };
 
     let data = {
+        _method: 'PUT',
         id: id,
         text: textAreaEdit.value
     };

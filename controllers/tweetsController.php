@@ -56,14 +56,34 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     }
 }
 else if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    var_dump($_POST);
-    
-    $data = file_get_contents("php://input");
-    var_dump($data);
+    if (array_key_exists("text", $_POST)) {
+        //Utilizar el arreglo $_POST
+        if ($_POST["_method"] === "POST") {
+            //Registro nuevo
+            postTweet($_POST["text"], true);
+        }
+        else if ($_POST["_method"] === "PUT") {
+            putTweet($_POST["id"], $_POST["text"], true);
+        }
+    }
+    else {
+        //Utilizar file_get_contents
+        $data = json_decode(file_get_contents("php://input"));
+
+        if ($data->_method === "POST") {
+            postTweet($data->text, false);
+        }
+        else if($data->_method === "PUT") {
+            putTweet($data->id, $data->text, false);
+        }
+    }
 
     exit();
+}
 
-    $text = $_POST["text"];
+function postTweet($text, $redirect) {
+    global $connection;
+
     $timestamp = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
 
     try {
@@ -76,7 +96,38 @@ else if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "Error en la inserción";
         }
         else {
-            header('Location: http://localhost/twitter/views/');
+            if ($redirect) {
+                header('Location: http://localhost/twitter/views/');
+            }
+            else {
+                echo "Registro guardado";
+            }
+        }
+    }
+    catch(PDOException $e) {
+        echo $e;
+    }
+}
+
+function putTweet($id, $text, $redirect) {
+    global $connection;
+
+    try {
+        $query = $connection->prepare('UPDATE tweets SET text = :text WHERE id = :id');
+        $query->bindParam(':text', $text, PDO::PARAM_STR);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+
+        if($query->rowCount() === 0) {
+            echo "Error en la actualización";
+        }
+        else {
+            if ($redirect) {
+                header('Location: http://localhost/twitter/views/');
+            }
+            else {
+                echo "Registro guardado";
+            }
         }
     }
     catch(PDOException $e) {

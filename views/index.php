@@ -13,6 +13,7 @@
         <div class="container">
             <div>
                 <form action="../controllers/tweetsController.php" method="POST" id="form-tweet" class="flow">
+                    <input type="hidden" name="_method" value="POST">
                     <label for="text">Tweet:</label>
                     <textarea name="text"></textarea>
                     <input type="submit" value="Agregar">
