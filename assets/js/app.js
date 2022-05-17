@@ -1,7 +1,9 @@
 const formTweet = document.getElementById("form-tweet");
 const tweetList = document.getElementById("tweet-list");
 const modalTweet = document.getElementById("modalTweet");
+const modalDeleteTweet = document.getElementById("modalDeleteTweet");
 const idEdit = document.getElementById("form-edit-id");
+const idDelete = document.getElementById("form-delete-id");
 const textAreaEdit = document.getElementById("form-edit-text");
 const btnSaveEdit = document.getElementById("btnSaveEdit");
 const keyList = "tweetList";
@@ -93,19 +95,9 @@ function getTweets() {
 }
 
 function deleteTweet(id) {
-    let list = getTweets();
+    idDelete.value = id;
 
-    list = list.filter(i => i.id !== id);
-
-    localStorage.setItem(keyList, JSON.stringify(list));
-
-    let tweet = document.getElementById(id);
-
-    tweet.className += ' hide';
-
-    setTimeout(() => {
-        tweet.remove();
-    }, 300);
+    modalDeleteTweet.classList.add("show");
 }
 
 function editTweet(id) {

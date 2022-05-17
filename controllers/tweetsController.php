@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     else {
         //Obtener TODOS los registros
         try {
-            $query = $connection->prepare('SELECT * FROM tweets');
+            $query = $connection->prepare('SELECT * FROM tweets WHERE active = 1');
             $query->execute();
     
             $tweets = array();
@@ -64,6 +64,11 @@ else if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         else if ($_POST["_method"] === "PUT") {
             putTweet($_POST["id"], $_POST["text"], true);
+        }
+    }
+    else if (array_key_exists("id", $_POST)) {
+        if ($_POST["_method"] === "DELETE") {
+            deleteTweet($_POST["id"], true);
         }
     }
     else {
@@ -127,6 +132,31 @@ function putTweet($id, $text, $redirect) {
             }
             else {
                 echo "Registro guardado";
+            }
+        }
+    }
+    catch(PDOException $e) {
+        echo $e;
+    }
+}
+
+function deleteTweet($id, $redirect) {
+    global $connection;
+
+    try {
+        $query = $connection->prepare('UPDATE tweets SET active = 0 WHERE id = :id');
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+
+        if($query->rowCount() === 0) {
+            echo "Error en la eliminación";
+        }
+        else {
+            if ($redirect) {
+                header('Location: http://localhost/twitter/views/');
+            }
+            else {
+                echo "Registro eliminado";
             }
         }
     }

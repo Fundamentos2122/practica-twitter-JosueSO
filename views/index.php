@@ -36,7 +36,10 @@
         </div>
     </div>
 
-    <?php include("modal_tweet.php"); ?>
+    <?php 
+        include("modal_tweet.php");
+        include("modal_delete.php"); 
+    ?>
 
     <script src="../assets/js/app.js"></script>
 </body>
