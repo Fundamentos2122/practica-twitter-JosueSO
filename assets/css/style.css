@@ -48,6 +48,10 @@ input, select, textarea, .btn {
     border-radius: 0.25em;
 }
 
+input[type="file"] {
+    padding-left: 0;
+}
+
 form textarea {
     width: 100%;
     resize: none;
