@@ -12,6 +12,7 @@
         <h1>Iniciar Sesión</h1>
 
         <form action="./controllers/accessController.php" method="POST" autocomplete="off" class="flow">
+            <input type="hidden" name="_method" value="POST">
             <div class="group-horizontal">
                 <label for="username">Nombre de usuario</label>
                 <input type="text" name="username">

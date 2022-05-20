@@ -15,42 +15,54 @@ catch(PDOException $e) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = trim($_POST["username"]);
-    $password = trim($_POST["password"]);
+    if ($_POST["_method"] === "POST") {
+        $username = trim($_POST["username"]);
+        $password = trim($_POST["password"]);
 
-    $password = password_hash($password, PASSWORD_DEFAULT);
+        try {
+            $query = $connection->prepare('SELECT * FROM users WHERE username = :username');
+            $query->bindParam(':username', $username, PDO::PARAM_STR);
+            $query->execute();
 
-    echo $password;
+            if ($query->rowCount() === 0) {
+                echo "Usuario no encontrado";
+                // header('Location: http://localhost/twitter/');
+                exit();
+            }
 
-    try {
-        $query = $connection->prepare('SELECT * FROM users WHERE username = :username AND password = :password');
-        $query->bindParam(':username', $username, PDO::PARAM_STR);
-        $query->bindParam(':password', $password, PDO::PARAM_STR);
-        $query->execute();
+            $user;
 
-        if ($query->rowCount() === 0) {
-            // header('Location: http://localhost/twitter/');
+            while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $user = new User($row["id"], $row["username"], $row["password"], $row["photo"], $row["type"]);
+            }
+
+            if (!password_verify($password, $user->getPassword())) {
+                echo "Contraseña inválida";
+                exit();
+            }
+
+            session_start();
+
+            $_SESSION["id"] = $user->getId();
+            $_SESSION["username"] = $user->getUsername();
+            $_SESSION["photo"] = $user->getPhoto();
+            $_SESSION["type"] = $user->getType();
+
+            header('Location: http://localhost/twitter/views/');
             exit();
         }
-
-        $user;
-
-        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $user = new User($row["id"], $row["username"], '', $row["photo"], $row["type"]);
+        catch(PDOException $e) {
+            echo $e;
         }
-
+    }
+    else if($_POST["_method"] === "DELETE") {
         session_start();
 
-        $_SESSION["id"] = $user->getId();
-        $_SESSION["username"] = $user->getUsername();
-        $_SESSION["photo"] = $user->getPhoto();
-        $_SESSION["type"] = $user->getType();
+        session_destroy();
 
-        header('Location: http://localhost/twitter/views/');
+        header('Location: http://localhost/twitter/');
+
         exit();
-    }
-    catch(PDOException $e) {
-        echo $e;
     }
 }
 

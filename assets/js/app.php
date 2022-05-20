@@ -1,3 +1,5 @@
+
+<script>
 const formTweet = document.getElementById("form-tweet");
 const tweetList = document.getElementById("tweet-list");
 const modalTweet = document.getElementById("modalTweet");
@@ -49,6 +51,16 @@ function paintTweets(list) {
     let html = '';
 
     for(var i = 0; i < list.length; i++) {
+        <?php
+            // session_start();
+
+            echo "console.log(\"Hola mundo\");";
+            // if($_SESSION["type"] === "administrador") {
+            //     echo  "html += ``";
+                        
+            // }
+        ?>
+
         html += 
             `<div class="card" id="${list[i].id}">
                 <div class="card-img">
@@ -61,8 +73,8 @@ function paintTweets(list) {
                     <button class="btn-option" onclick="editTweet(${list[i].id})">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
-                    <button class="btn-option" onclick="deleteTweet(${list[i].id})">
-                        <i class="fa-solid fa-xmark"></i>
+                    <button class=\"btn-option\" onclick=\"deleteTweet(${list[i].id})\">
+                        <i class=\"fa-solid fa-xmark\"></i>
                     </button>
                 </div>
             </div>`;
@@ -154,3 +166,4 @@ function saveEdit(id) {
 
     xhttp.send(JSON.stringify(data));
 }
+</script>

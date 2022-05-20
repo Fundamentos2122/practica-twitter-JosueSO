@@ -11,12 +11,18 @@
 
 <div class="banner">
     <div class="" id="photo">
-        <img src="https://picsum.photos/500" alt="" class="img-fluid">
+        <?php
+            echo "<img src=\"data:image/jpeg;base64," . $_SESSION["photo"] . "\" alt=\"\" class=\"img-fluid\">";
+        ?>
     </div>
     <div>
         <h1>TWITTER</h1>
     </div>
     <div>
-        <a href="../index.html" class="close-session">Cerrar sesión</a>
+        <form action="../controllers/accessController.php" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" class="close-session" value="Cerrar sesión" >
+        </form>
+        
     </div>
 </div>

@@ -39,8 +39,9 @@
     <?php 
         include("modal_tweet.php");
         include("modal_delete.php"); 
+        include("../assets/js/app.php");
     ?>
 
-    <script src="../assets/js/app.js"></script>
+    <!-- <script src="../assets/js/app.js"></script> -->
 </body>
 </html>

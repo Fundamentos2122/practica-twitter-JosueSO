@@ -31,6 +31,10 @@ class User {
         $this->_username = $username;
     }
 
+    public function getPassword() {
+        return $this->_password;
+    }
+
     public function setPassword($password) {
         $this->_password = $password;
     }
@@ -40,7 +44,7 @@ class User {
     }
 
     public function setPhoto($photo) {
-        $this->_photo = $photo;
+        $this->_photo = base64_encode($photo);
     }
 
     public function getType() {

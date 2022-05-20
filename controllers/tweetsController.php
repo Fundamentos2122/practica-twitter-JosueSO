@@ -36,8 +36,13 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     }
     else {
         //Obtener TODOS los registros
+        session_start();
+
+        $user_id = $_SESSION["id"];
+
         try {
-            $query = $connection->prepare('SELECT * FROM tweets WHERE active = 1');
+            $query = $connection->prepare('SELECT * FROM tweets WHERE active = 1 AND user_id = :user_id');
+            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             $query->execute();
     
             $tweets = array();
@@ -91,10 +96,15 @@ function postTweet($text, $redirect) {
 
     $timestamp = date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
 
+    session_start();
+
+    $user_id = $_SESSION["id"];
+
     try {
-        $query = $connection->prepare('INSERT INTO tweets VALUES(NULL, :text, :timestamp, 1)');
+        $query = $connection->prepare('INSERT INTO tweets VALUES(NULL, :text, :timestamp, 1, :user_id)');
         $query->bindParam(':text', $text, PDO::PARAM_STR);
         $query->bindParam(':timestamp', $timestamp, PDO::PARAM_STR);
+        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $query->execute();
 
         if($query->rowCount() === 0) {
