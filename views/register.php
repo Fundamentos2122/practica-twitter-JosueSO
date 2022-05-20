@@ -11,7 +11,7 @@
     <div class="card-login">
         <h1>Registro de usuario</h1>
 
-        <form action="" autocomplete="off" class="flow">
+        <form action="../controllers/usersController.php" method="POST" autocomplete="off" class="flow" enctype="multipart/form-data">
             <div class="group-horizontal">
                 <label for="username">Nombre de usuario</label>
                 <input type="text" name="username">

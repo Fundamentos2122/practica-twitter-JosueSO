@@ -36,7 +36,7 @@ class User {
     }
 
     public function getPhoto() {
-        return $this->_photo
+        return $this->_photo;
     }
 
     public function setPhoto($photo) {

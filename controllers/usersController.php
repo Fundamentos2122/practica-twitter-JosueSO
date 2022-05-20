@@ -13,10 +13,19 @@ catch(PDOException $e) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //Obtener información del POST
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-    $photo = $_POST["photo"];
-    $type = $_POST["type"];
+    $username = trim($_POST["username"]);
+    $password = trim($_POST["password"]);
+        
+    $password = password_hash($password, PASSWORD_DEFAULT);
+    
+    $type = "normal";
+    $photo = "";
+    
+    if (sizeof($_FILES) > 0) {
+        $tmp_name = $_FILES["photo"]["tmp_name"];
+
+        $photo = file_get_contents($tmp_name);
+    }
 
     try {
         $query = $connection->prepare('INSERT INTO users VALUES(NULL, :username, :password, :photo, :type)');
@@ -30,12 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "Error en la inserción";
         }
         else {
-            if ($redirect) {
-                header('Location: http://localhost/twitter/');
-            }
-            else {
-                echo "Registro guardado";
-            }
+            header('Location: http://localhost/twitter/');
         }
     }
     catch(PDOException $e) {
