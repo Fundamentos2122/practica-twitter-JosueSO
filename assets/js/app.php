@@ -81,6 +81,20 @@ function paintTweets(list) {
     }
 
     tweetList.innerHTML = html;
+
+    <?php
+        session_start();
+
+        if($_SESSION["type"] !== "administrador") {
+            echo  "hideDelete();";                
+        }
+    ?>
+}
+
+function hideDelete() {
+    let btnDelete = document.querySelectorAll("button[onclick^='deleteTweet']");
+
+    btnDelete.forEach(btn => btn.remove());
 }
 
 function getTweets() {

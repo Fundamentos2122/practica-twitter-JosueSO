@@ -41,8 +41,18 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $user_id = $_SESSION["id"];
 
         try {
-            $query = $connection->prepare('SELECT * FROM tweets WHERE active = 1 AND user_id = :user_id');
-            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $query_string = 'SELECT * FROM tweets WHERE active = 1';
+
+            if($_SESSION["type"] !== "administrador") {
+                $query_string = $query_string . ' AND user_id = :user_id';
+            }
+
+            $query = $connection->prepare($query_string);
+
+            if($_SESSION["type"] !== "administrador") {
+                $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }
+
             $query->execute();
     
             $tweets = array();
